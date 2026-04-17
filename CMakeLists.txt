@@ -12,7 +12,7 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(rl_tester_snake main.cpp)
+add_executable(rl_tester_snake src/main.cpp)
 target_link_libraries(rl_tester_snake
         Qt::Core
         Qt::Gui

@@ -6,12 +6,10 @@
 // Entry point of program.
 
 #include <QApplication>
-#include <QPushButton>
+#include <core/Session.hpp>
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
-    QPushButton button("Hello world!", nullptr);
-    button.resize(200, 100);
-    button.show();
+    Session session = Session(10, true);
     return QApplication::exec();
 }

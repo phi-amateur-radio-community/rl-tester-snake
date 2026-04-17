@@ -9,11 +9,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
+        with:
+          version: 6.11.0
+          target: desktop
+
+      - name: Checkout
+        uses: actions/checkout@v6
 
       - name: Configure CMake
         run: cmake -B build -S . -G "Ninja"

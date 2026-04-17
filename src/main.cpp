@@ -10,6 +10,6 @@
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
-    Session session = Session(10, true);
+    auto session = Session(10, true);
     return QApplication::exec();
 }

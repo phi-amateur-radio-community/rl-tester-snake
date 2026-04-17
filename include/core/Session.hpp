@@ -6,7 +6,7 @@
 // Header file of session.
 
 #pragma once
-#include <QWidget>
+#include <ui/GridWidget.hpp>
 
 using namespace std;
 
@@ -14,7 +14,7 @@ class Session {
     int size_;
     vector<int> table_;
     const bool gui_;
-    QWidget* window_;
-    public:
+    GridWidget* window_;
+public:
     Session(int size, bool gui);
 };

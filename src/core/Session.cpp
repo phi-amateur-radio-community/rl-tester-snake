@@ -10,8 +10,6 @@
 Session::Session(int size, bool gui) : gui_(gui), table_(size^2) {
     size_ = size;
     if (gui) {
-        window_ = new QWidget();
-        window_->setFixedSize(size_*30, size_*30);
-        window_->show();
+        window_ = new GridWidget(size_);
     }
 }

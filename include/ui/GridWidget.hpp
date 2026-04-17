@@ -6,3 +6,11 @@
 // Header file of grid widget.
 
 #pragma once
+
+#include <QWidget>
+
+class GridWidget : public QWidget {
+    int size_;
+public:
+    GridWidget(int size, QWidget* parent = nullptr);
+};

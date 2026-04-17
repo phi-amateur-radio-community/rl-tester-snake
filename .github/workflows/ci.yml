@@ -18,14 +18,11 @@ jobs:
       - name: Load MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Copy Deploy
-        run: windeployqt rl_tester_snake.exe
-
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Configure CMake
-        run: cmake -B build -S . -G "Ninja"
+        run: cmake -B build -S . -G "Ninja" -DCMAKE_PREFIX_PATH=$QT_ROOT_DIR
 
       - name: Build
         run: cmake --build build

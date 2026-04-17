@@ -1,1 +1,5 @@
-add_library(RtsUiLib GridWidget.cpp)
+add_library(RtsUiLib)
+target_sources(RtsUiLib PRIVATE
+        GridWidget.cpp)
+
+target_include_directories(RtsUiLib PUBLIC ${CMAKE_SOURCE_DIR}/include)

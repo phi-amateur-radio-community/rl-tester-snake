@@ -2,7 +2,7 @@
 // Licensed under the GNU General Public License v3.0
 // See LICENSE file for details.
 //
-// include/ui/GridWidget.hpp
-// Header file of grid widget.
+// include/core/Session.hpp
+// Header file of session.
 
 #pragma once

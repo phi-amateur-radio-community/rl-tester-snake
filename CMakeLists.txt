@@ -13,4 +13,3 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 add_subdirectory(src)
-add_subdirectory(include)

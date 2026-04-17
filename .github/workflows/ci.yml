@@ -18,6 +18,9 @@ jobs:
       - name: Load MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Copy Deploy
+        run: windeployqt rl_tester_snake.exe
+
       - name: Checkout
         uses: actions/checkout@v6
 

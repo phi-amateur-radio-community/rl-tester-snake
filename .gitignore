@@ -3,3 +3,6 @@
 
 # CMake Presets
 CMakeUserPresets.json
+
+# Build
+cmake-build*

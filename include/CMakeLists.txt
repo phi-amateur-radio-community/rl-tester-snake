@@ -1,0 +1,1 @@
+target_sources(RtsUiLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ui/GridWidget.hpp)

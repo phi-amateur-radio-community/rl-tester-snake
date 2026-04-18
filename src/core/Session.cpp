@@ -16,7 +16,6 @@ Session::Session(int size, bool gui) : gui_(gui) {
     empty_list_ = vector<int>(size_square_);
     snake_list_ = vector<int>();
     snake_list_.reserve(size_square_);
-    init();
     if (gui) {
         window_ = new GridWidget(size_, table_.data());
     }
@@ -29,11 +28,56 @@ void Session::init() {
         empty_list_[i] = i;
     }
     const int location = getMatrixRand();
+    head_position_ = location;
     table_[location] = 1;
     snake_list_.push_back(location);
     empty_list_[location] = empty_list_.back();
     empty_list_.pop_back();
     spawnApple();
+}
+
+bool Session::move(const Action action) {
+    switch (action) {
+        case Action::Up:
+            if (head_position_ < size_) {
+                return false;
+            }
+            head_position_ -= size_;
+            break;
+        case Action::Down:
+            if (head_position_ + size_ > size_square_) {
+                return false;
+            }
+            head_position_ += size_;
+            break;
+        case Action::Left:
+            if (head_position_ % size_ == 0) {
+                return false;
+            }
+            head_position_--;
+            break;
+        case Action::Right:
+            if ((head_position_ + 1) % size_ == 0) {
+                return false;
+            }
+            head_position_++;
+            break;
+    }
+    if (table_[head_position_] == -1) {
+        table_[head_position_] = ++snake_length_;
+        snake_list_.push_back(head_position_);
+    } else {
+        for (int& i : snake_list_) {
+            if (--table_[i] == 0) {
+                i = snake_list_.back();
+                snake_list_.pop_back();
+            }
+        }
+        table_[head_position_] = snake_length_;
+        snake_list_.push_back(head_position_);
+    }
+    updateWindow();
+    return true;
 }
 
 void Session::spawnApple() {
@@ -54,4 +98,10 @@ int Session::getMatrixRand() const {
 int Session::getAppleRand() const {
     uniform_int_distribution dist(0, size_square_ - snake_length_);
     return dist(rng);
+}
+
+void Session::updateWindow() const {
+    if (gui_) {
+        window_->update();
+    }
 }

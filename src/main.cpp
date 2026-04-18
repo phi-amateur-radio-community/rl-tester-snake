@@ -11,5 +11,7 @@
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
     auto session = Session(10, true);
+    session.init();
+    session.move(Action::Left);
     return QApplication::exec();
 }

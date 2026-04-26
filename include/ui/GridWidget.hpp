@@ -9,6 +9,10 @@
 
 #include <QWidget>
 
+#include <ui/inter/IUiKeyCallBack.hpp>
+
+using namespace std;
+
 constexpr int CELL_LENGTH = 30;
 constexpr QColor BACKGROUND_COLOR(135, 150, 186);
 constexpr QColor SNAKE_COLOR(160, 193, 128);
@@ -18,7 +22,9 @@ class GridWidget : public QWidget {
     int size_;
     int* data_;
 public:
+    IUiKeyCallBack* key_call_back_ = nullptr;
     GridWidget(int size, int* data, QWidget* parent = nullptr);
 protected:
     void paintEvent(QPaintEvent* event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 };

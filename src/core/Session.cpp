@@ -18,6 +18,7 @@ Session::Session(int size, bool gui) : gui_(gui) {
     snake_list_.reserve(size_square_);
     if (gui) {
         window_ = new GridWidget(size_, table_.data());
+        window_->key_call_back_ = this;
     }
 }
 
@@ -39,28 +40,28 @@ void Session::init() {
 bool Session::move(const Action action) {
     switch (action) {
         case Action::Up:
-            if (head_position_ < size_) {
-                return false;
-            }
-            head_position_ -= size_;
-            break;
-        case Action::Down:
-            if (head_position_ + size_ > size_square_) {
-                return false;
-            }
-            head_position_ += size_;
-            break;
-        case Action::Left:
             if (head_position_ % size_ == 0) {
                 return false;
             }
             head_position_--;
             break;
-        case Action::Right:
+        case Action::Down:
             if ((head_position_ + 1) % size_ == 0) {
                 return false;
             }
             head_position_++;
+            break;
+        case Action::Left:
+            if (head_position_ + size_ > size_square_) {
+                return false;
+            }
+            head_position_ += size_;
+            break;
+        case Action::Right:
+            if (head_position_ < size_) {
+                return false;
+            }
+            head_position_ -= size_;
             break;
     }
     if (table_[head_position_] == -1) {
@@ -81,7 +82,7 @@ bool Session::move(const Action action) {
 }
 
 void Session::spawnApple() {
-    int location = getAppleRand();
+    const int location = getAppleRand();
     table_[empty_list_[location]] = -1;
 }
 
@@ -104,4 +105,8 @@ void Session::updateWindow() const {
     if (gui_) {
         window_->update();
     }
+}
+
+bool Session::onClick(const Action action) {
+    return this->move(action);
 }

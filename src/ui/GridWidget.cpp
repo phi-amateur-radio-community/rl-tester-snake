@@ -6,7 +6,9 @@
 // Grid layout widget.
 
 #include <ui/GridWidget.hpp>
+#include <core/Action.hpp>
 #include <QPainter>
+#include <QKeyEvent>
 
 GridWidget::GridWidget(const int size, int* data, QWidget* parent) : QWidget(parent) {
     size_ = size;
@@ -24,11 +26,29 @@ void GridWidget::paintEvent(QPaintEvent *event) {
         for (int j = 0; j < size_; j++) {
             if (data_[index] > 0) {
                 p.fillRect(i*CELL_LENGTH, j*CELL_LENGTH, CELL_LENGTH, CELL_LENGTH, SNAKE_COLOR);
-                qDebug() << i << " " << j;
             } else if (data_[index] == -1) {
                 p.fillRect(i*CELL_LENGTH, j*CELL_LENGTH, CELL_LENGTH, CELL_LENGTH, APPLE_COLOR);
             }
             index++;
         }
+    }
+}
+
+void GridWidget::keyPressEvent(QKeyEvent *event) {
+    if (!key_call_back_) return;
+    switch (event->key()) {
+        case Qt::Key_W:
+            key_call_back_->onClick(Action::Up);
+            break;
+        case Qt::Key_S:
+            key_call_back_->onClick(Action::Down);
+            break;
+        case Qt::Key_A:
+            key_call_back_->onClick(Action::Right);
+            break;
+        case Qt::Key_D:
+            key_call_back_->onClick(Action::Left);
+            break;
+        default: ;
     }
 }

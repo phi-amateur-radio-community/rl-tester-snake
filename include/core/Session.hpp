@@ -9,7 +9,7 @@
 #include <ui/GridWidget.hpp>
 #include <ui/inter/IUiKeyCallBack.hpp>
 #include <core/Action.hpp>
-#include <random>
+#include <util/UnorderList.hpp>
 
 using namespace std;
 
@@ -19,14 +19,19 @@ class Session : public IUiKeyCallBack{
     int snake_length_{};
     int head_position_{};
     vector<int> table_;
-    vector<int> empty_list_;
-    vector<int> snake_list_;
+    UnorderedList empty_list_;
+    UnorderedList snake_list_;
     const bool gui_;
     GridWidget* window_;
     [[nodiscard]] int getRand() const;
     [[nodiscard]] int getMatrixRand() const;
     [[nodiscard]] int getAppleRand() const;
     void spawnApple();
+    void addSnake(int position);
+    void removeSnake(int position);
+    void checkPosition();
+    void printTable() const;
+    void exitSession(bool status) {}; //TODO
 public:
     Session(int size, bool gui);
     void init();

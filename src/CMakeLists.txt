@@ -2,6 +2,7 @@ set(RTS_SELF_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 
 add_subdirectory(core)
 add_subdirectory(ui)
+add_subdirectory(util)
 
 add_executable(rl_tester_snake main.cpp)
 
@@ -15,4 +16,5 @@ target_link_libraries(rl_tester_snake
         Qt::Widgets
         RtsCoreLib
         RtsUiLib
+        RtsUtilLib
 )

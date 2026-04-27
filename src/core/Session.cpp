@@ -6,16 +6,14 @@
 // Program session.
 
 #include <core/Session.hpp>
+#include <random>
+#include <iostream>
 
 mt19937 rng(random_device{}());
 
-Session::Session(int size, bool gui) : gui_(gui) {
+Session::Session(int size, const bool gui) : size_square_(size * size), empty_list_(size_square_), snake_list_(size_square_), gui_(gui) {
     size_ = size;
-    size_square_ = size * size;
     table_ = vector<int>(size_square_);
-    empty_list_ = vector<int>(size_square_);
-    snake_list_ = vector<int>();
-    snake_list_.reserve(size_square_);
     if (gui) {
         window_ = new GridWidget(size_, table_.data());
         window_->key_call_back_ = this;
@@ -26,14 +24,13 @@ void Session::init() {
     snake_length_ = 1;
     ranges::fill(table_, 0);
     for (int i = 0; i < size_square_; i++) {
-        empty_list_[i] = i;
+        empty_list_.push(i);
     }
     const int location = getMatrixRand();
     head_position_ = location;
     table_[location] = 1;
-    snake_list_.push_back(location);
-    empty_list_[location] = empty_list_.back();
-    empty_list_.pop_back();
+    snake_list_.push(location);
+    empty_list_.pop(location);
     spawnApple();
 }
 
@@ -64,26 +61,14 @@ bool Session::move(const Action action) {
             head_position_ -= size_;
             break;
     }
-    if (table_[head_position_] == -1) {
-        table_[head_position_] = ++snake_length_;
-        snake_list_.push_back(head_position_);
-    } else {
-        for (int& i : snake_list_) {
-            if (--table_[i] == 0) {
-                i = snake_list_.back();
-                snake_list_.pop_back();
-            }
-        }
-        table_[head_position_] = snake_length_;
-        snake_list_.push_back(head_position_);
-    }
+    checkPosition();
     updateWindow();
     return true;
 }
 
 void Session::spawnApple() {
     const int location = getAppleRand();
-    table_[empty_list_[location]] = -1;
+    table_[empty_list_.data_[location]] = -1;
 }
 
 int Session::getRand() const {
@@ -107,6 +92,44 @@ void Session::updateWindow() const {
     }
 }
 
+void Session::printTable() const {
+    for (int i = 0; i < size_; i++) {
+        for (int j = 0; j < size_; j++) {
+            cout << format("{:05} ", table_[j * size_ + i]);
+        }
+        cout << endl;
+    }
+}
+
 bool Session::onClick(const Action action) {
+    qDebug() << "Click";
     return this->move(action);
+}
+
+void Session::addSnake(const int position) {
+    snake_list_.push(position);
+    empty_list_.pop(position);
+}
+
+void Session::removeSnake(const int position) {
+    empty_list_.push(position);
+    snake_list_.pop(position);
+}
+
+void Session::checkPosition() {
+    if (table_[head_position_] == -1) {
+        table_[head_position_] = ++snake_length_;
+        addSnake(head_position_);
+        spawnApple();
+    } else if (table_[head_position_] > 0) {
+        exitSession(false);
+    } else {
+        for (const int& i : snake_list_.data_) {
+            if (--table_[i] == 0) {
+                removeSnake(i);
+            }
+        }
+        table_[head_position_] = snake_length_;
+        addSnake(head_position_);
+    }
 }

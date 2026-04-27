@@ -49,7 +49,7 @@ bool Session::move(const Action action) {
             head_position_++;
             break;
         case Action::Left:
-            if (head_position_ + size_ > size_square_) {
+            if (head_position_ + size_ >= size_square_) {
                 return false;
             }
             head_position_ += size_;
@@ -102,7 +102,6 @@ void Session::printTable() const {
 }
 
 bool Session::onClick(const Action action) {
-    qDebug() << "Click";
     return this->move(action);
 }
 

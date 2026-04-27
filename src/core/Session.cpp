@@ -48,13 +48,13 @@ bool Session::move(const Action action) {
             }
             head_position_++;
             break;
-        case Action::Left:
+        case Action::Right:
             if (head_position_ + size_ >= size_square_) {
                 return false;
             }
             head_position_ += size_;
             break;
-        case Action::Right:
+        case Action::Left:
             if (head_position_ < size_) {
                 return false;
             }

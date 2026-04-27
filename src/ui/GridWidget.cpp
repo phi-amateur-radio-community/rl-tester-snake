@@ -44,10 +44,10 @@ void GridWidget::keyPressEvent(QKeyEvent *event) {
             key_call_back_->onClick(Action::Down);
             break;
         case Qt::Key_A:
-            key_call_back_->onClick(Action::Right);
+            key_call_back_->onClick(Action::Left);
             break;
         case Qt::Key_D:
-            key_call_back_->onClick(Action::Left);
+            key_call_back_->onClick(Action::Right);
             break;
         default: ;
     }

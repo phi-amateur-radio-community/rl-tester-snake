@@ -8,10 +8,19 @@
 #include <core/Session.hpp>
 #include <random>
 #include <iostream>
+#include <utility>
 
 mt19937 rng(random_device{}());
 
-Session::Session(const int size, const bool gui) : size_square_(size * size), empty_list_(size_square_), snake_list_(size_square_), gui_(gui) {
+Session::Session(const int size, const bool gui, const bool log, const bool status, string session_name)
+    : size_square_(size * size)
+    , empty_list_(size_square_)
+    , snake_list_(size_square_)
+    , gui_(gui)
+    , status_(status)
+    , session_name_(std::move(session_name))
+    , logger_(session_name_ + ".parl.log", log)
+{
     size_ = size;
     table_ = vector<int>(size_square_);
     if (gui) {
@@ -27,6 +36,7 @@ void Session::init() {
         empty_list_.push(i);
     }
     const int location = getMatrixRand();
+    logger_.write(false, location);
     head_position_ = location;
     table_[location] = 1;
     snake_list_.push(location);
@@ -35,6 +45,7 @@ void Session::init() {
 }
 
 bool Session::move(const Action action) {
+    logger_.write(action);
     switch (action) {
         case Action::Up:
             if (head_position_ % size_ == 0) {
@@ -69,6 +80,7 @@ bool Session::move(const Action action) {
 void Session::spawnApple() {
     const int location = getAppleRand();
     table_[empty_list_.data_[location]] = -1;
+    logger_.write(true, location);
 }
 
 int Session::getRand() const {

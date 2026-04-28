@@ -6,10 +6,12 @@
 // Header file of session.
 
 #pragma once
+#include <fstream>
 #include <ui/GridWidget.hpp>
 #include <ui/inter/IUiKeyCallBack.hpp>
 #include <core/Action.hpp>
 #include <util/UnorderList.hpp>
+#include <util/Logger.hpp>
 
 using namespace std;
 
@@ -22,6 +24,9 @@ class Session : public IUiKeyCallBack{
     UnorderedList empty_list_;
     UnorderedList snake_list_;
     const bool gui_;
+    const bool status_;
+    string session_name_;
+    Logger logger_;
     GridWidget* window_;
     [[nodiscard]] int getRand() const;
     [[nodiscard]] int getMatrixRand() const;
@@ -33,7 +38,7 @@ class Session : public IUiKeyCallBack{
     void printTable() const;
     void exitSession(bool status) {}; //TODO
 public:
-    Session(int size, bool gui);
+    Session(int size, bool gui, bool log, bool status, string session_name);
     void init();
     bool move(Action action);
     void updateWindow() const;

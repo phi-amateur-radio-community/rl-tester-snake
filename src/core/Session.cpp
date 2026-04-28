@@ -11,7 +11,7 @@
 
 mt19937 rng(random_device{}());
 
-Session::Session(int size, const bool gui) : size_square_(size * size), empty_list_(size_square_), snake_list_(size_square_), gui_(gui) {
+Session::Session(const int size, const bool gui) : size_square_(size * size), empty_list_(size_square_), snake_list_(size_square_), gui_(gui) {
     size_ = size;
     table_ = vector<int>(size_square_);
     if (gui) {
@@ -118,6 +118,9 @@ void Session::removeSnake(const int position) {
 void Session::checkPosition() {
     if (table_[head_position_] == -1) {
         table_[head_position_] = ++snake_length_;
+        if (snake_length_ == size_square_) {
+            exitSession(true);
+        }
         addSnake(head_position_);
         spawnApple();
     } else if (table_[head_position_] > 0) {

@@ -12,16 +12,16 @@
 
 mt19937 rng(random_device{}());
 
-Session::Session(const int size, const bool gui, const bool log, const bool status, string session_name)
-    : size_square_(size * size)
+Session::Session(const int size, const bool gui, const bool log, string session_name)
+    : size_(size)
+    , size_square_(size * size)
     , empty_list_(size_square_)
     , snake_list_(size_square_)
     , gui_(gui)
-    , status_(status)
+    , replay_(false)
     , session_name_(std::move(session_name))
     , logger_(session_name_ + ".parl.log", log)
 {
-    size_ = size;
     table_ = vector<int>(size_square_);
     if (gui) {
         window_ = new GridWidget(size_, table_.data());
@@ -29,19 +29,59 @@ Session::Session(const int size, const bool gui, const bool log, const bool stat
     }
 }
 
+Session::Session(const int size, string log_path)
+    : size_(size)
+    , size_square_(size * size)
+    , empty_list_(size_square_)
+    , snake_list_(size_square_)
+    , gui_(false)
+    , replay_(true)
+    , session_name_(std::move(log_path))
+    , logger_(log_path)
+{
+    table_ = vector<int>(size_square_);
+    window_ = new GridWidget(size_, table_.data());
+    window_->key_call_back_ = this;
+}
+
 void Session::init() {
+    init(getMatrixRand());
+    spawnApple();
+}
+
+void Session::init(const int position) {
     snake_length_ = 1;
     ranges::fill(table_, 0);
     for (int i = 0; i < size_square_; i++) {
         empty_list_.push(i);
     }
-    const int location = getMatrixRand();
-    logger_.write(false, location);
-    head_position_ = location;
-    table_[location] = 1;
-    snake_list_.push(location);
-    empty_list_.pop(location);
-    spawnApple();
+    logger_.write(SpawnSnake(position));
+    head_position_ = position;
+    table_[position] = 1;
+    snake_list_.push(position);
+    empty_list_.pop(position);
+}
+
+struct LogReplayVisitor {
+    Session *session_;
+
+    bool operator()(const Action action) const {
+        return session_->move(action);
+    }
+
+    bool operator()(const SpawnSnake location) const {
+        session_->init(location.position);
+        return true;
+    }
+
+    bool operator()(const SpawnApple location) const {
+        session_->spawnApple(location.position);
+        return true;
+    }
+};
+
+void Session::step(LogType data) {
+    visit(LogReplayVisitor{this}, data);
 }
 
 bool Session::move(const Action action) {
@@ -78,9 +118,12 @@ bool Session::move(const Action action) {
 }
 
 void Session::spawnApple() {
-    const int location = getAppleRand();
+    spawnApple(getAppleRand());
+}
+
+void Session::spawnApple(const int location) {
     table_[empty_list_.data_[location]] = -1;
-    logger_.write(true, location);
+    logger_.write(SpawnApple(location));
 }
 
 int Session::getRand() const {

@@ -5,8 +5,38 @@
 // src/util/Logger.cpp
 // Record and read log file.
 
+#include <filesystem>
 #include <iostream>
 #include <util/Logger.hpp>
+
+struct LogTypeVisitor {
+    string operator()(const Action action) const {
+        string msg;
+        switch (action) {
+            case Action::Up:
+                msg = "U";
+                break;
+            case Action::Down:
+                msg = "D";
+                break;
+            case Action::Left:
+                msg = "L";
+                break;
+            case Action::Right:
+                msg = "R";
+                break;
+        }
+        return msg;
+    }
+
+    string operator()(const SpawnApple spawn) const {
+        return "A" + to_string(spawn.position);
+    }
+
+    string operator()(const SpawnSnake spawn) const {
+        return "S" + to_string(spawn.position);
+    }
+};
 
 Logger::Logger(const string &path) {
     log_file_ = fstream(path, ios::in);
@@ -27,36 +57,30 @@ Logger::Logger(const string &path, bool active): active_(active) {
     }
 }
 
-void Logger::write(const Action action) {
+void Logger::write(LogType data) {
     if (!active_) {
         return;
     }
-    string msg;
-    switch (action) {
-        case Action::Up:
-            msg = "U";
-            break;
-        case Action::Down:
-            msg = "D";
-            break;
-        case Action::Left:
-            msg = "L";
-            break;
-        case Action::Right:
-            msg = "R";
-            break;
-    }
-    log_file_ << msg << endl;
+    log_file_ << visit(LogTypeVisitor(), data) << endl;
 }
 
-void Logger::write(const bool status, const int position) {
-    if (!active_) {
-        return;
+LogType Logger::read() {
+    string msg;
+    getline(log_file_, msg);
+    switch (msg[0]) {
+        case 'U':
+            return Action::Up;
+        case 'D':
+            return Action::Down;
+        case 'L':
+            return Action::Left;
+        case 'R':
+            return Action::Right;
+        case 'A':
+            return SpawnApple(stoi(msg.substr(1)));
+        case 'S':
+            return SpawnSnake(stoi(msg.substr(1)));
+        default: ;
     }
-    if (status) {
-        log_file_ << "A";
-    } else {
-        log_file_ << "S";
-    }
-    log_file_ << position << endl;
+    return SpawnSnake();
 }

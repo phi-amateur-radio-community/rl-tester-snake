@@ -24,23 +24,27 @@ class Session : public IUiKeyCallBack{
     UnorderedList empty_list_;
     UnorderedList snake_list_;
     const bool gui_;
-    const bool status_;
+    const bool replay_;
     string session_name_;
     Logger logger_;
     GridWidget* window_;
     [[nodiscard]] int getRand() const;
     [[nodiscard]] int getMatrixRand() const;
     [[nodiscard]] int getAppleRand() const;
-    void spawnApple();
     void addSnake(int position);
     void removeSnake(int position);
     void checkPosition();
     void printTable() const;
     void exitSession(bool status) {}; //TODO
 public:
-    Session(int size, bool gui, bool log, bool status, string session_name);
+    Session(int size, bool gui, bool log, string session_name);
+    Session(int size, string log_path);
     void init();
+    void init(int position);
+    void step(LogType data);
     bool move(Action action);
+    void spawnApple();
+    void spawnApple(int location);
     void updateWindow() const;
     bool onClick(Action action) override;
 };

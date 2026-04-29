@@ -8,9 +8,20 @@
 #pragma once
 
 #include <fstream>
+#include <variant>
 #include <core/Action.hpp>
 
 using namespace std;
+
+struct SpawnApple {
+    int position;
+};
+
+struct SpawnSnake {
+    int position;
+};
+
+using LogType = variant<Action, SpawnApple, SpawnSnake>;
 
 class Logger {
     fstream log_file_;
@@ -18,6 +29,6 @@ class Logger {
 public:
     explicit Logger(const string &path);
     explicit Logger(const string &path, bool active);
-    void write(Action action);
-    void write(bool status, int position);
+    void write(LogType data);
+    LogType read();
 };

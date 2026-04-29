@@ -62,23 +62,19 @@ void Session::init(const int position) {
     empty_list_.pop(position);
 }
 
-struct LogReplayVisitor {
-    Session *session_;
+bool LogReplayVisitor::operator()(const Action action) const {
+    return session_->move(action);
+}
 
-    bool operator()(const Action action) const {
-        return session_->move(action);
-    }
+bool LogReplayVisitor::operator()(const SpawnSnake location) const {
+    session_->init(location.position);
+    return true;
+}
 
-    bool operator()(const SpawnSnake location) const {
-        session_->init(location.position);
-        return true;
-    }
-
-    bool operator()(const SpawnApple location) const {
-        session_->spawnApple(location.position);
-        return true;
-    }
-};
+bool LogReplayVisitor::operator()(const SpawnApple location) const {
+    session_->spawnApple(location.position);
+    return true;
+}
 
 void Session::step(LogType data) {
     visit(LogReplayVisitor{this}, data);

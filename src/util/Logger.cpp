@@ -9,34 +9,32 @@
 #include <iostream>
 #include <util/Logger.hpp>
 
-struct LogTypeVisitor {
-    string operator()(const Action action) const {
-        string msg;
-        switch (action) {
-            case Action::Up:
-                msg = "U";
-                break;
-            case Action::Down:
-                msg = "D";
-                break;
-            case Action::Left:
-                msg = "L";
-                break;
-            case Action::Right:
-                msg = "R";
-                break;
-        }
-        return msg;
+string LogTypeVisitor::operator()(const Action action) const {
+    string msg;
+    switch (action) {
+        case Action::Up:
+            msg = "U";
+            break;
+        case Action::Down:
+            msg = "D";
+            break;
+        case Action::Left:
+            msg = "L";
+            break;
+        case Action::Right:
+            msg = "R";
+            break;
     }
+    return msg;
+}
 
-    string operator()(const SpawnApple spawn) const {
-        return "A" + to_string(spawn.position);
-    }
+string LogTypeVisitor::operator()(const SpawnApple spawn) const {
+    return "A" + to_string(spawn.position);
+}
 
-    string operator()(const SpawnSnake spawn) const {
-        return "S" + to_string(spawn.position);
-    }
-};
+string LogTypeVisitor::operator()(const SpawnSnake spawn) const {
+    return "S" + to_string(spawn.position);
+}
 
 Logger::Logger(const string &path) {
     log_file_ = fstream(path, ios::in);

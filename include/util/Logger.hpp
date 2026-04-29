@@ -21,6 +21,12 @@ struct SpawnSnake {
     int position;
 };
 
+struct LogTypeVisitor {
+    string operator()(Action action) const;
+    string operator()(SpawnApple spawn) const;
+    string operator()(SpawnSnake spawn) const;
+};
+
 using LogType = variant<Action, SpawnApple, SpawnSnake>;
 
 class Logger {

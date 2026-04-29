@@ -48,3 +48,11 @@ public:
     void updateWindow() const;
     bool onClick(Action action) override;
 };
+
+struct LogReplayVisitor {
+    Session *session_;
+
+    bool operator()(Action action) const;
+    bool operator()(SpawnSnake location) const;
+    bool operator()(SpawnApple location) const;
+};
